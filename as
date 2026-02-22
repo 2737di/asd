@@ -1,13 +1,27 @@
-local BRAND = "ชื่อHubใหม่พี่"
+local BRAND = "1220Hub"
 local HWID = game:GetService("RbxAnalyticsService"):GetClientId()
 local WispIP = "http://217.154.161.167:12497"
 
+-- ระบบเช็ครุ่นเครื่องแบบละเอียด
+local UIS = game:GetService("UserInputService")
+local DeviceModel = "Unknown Device"
+
+if UIS:GetPlatform() == Enum.Platform.Windows then
+    DeviceModel = "PC (Windows)"
+elseif UIS:GetPlatform() == Enum.Platform.IOS then
+    DeviceModel = "iPhone/iPad"
+elseif UIS:GetPlatform() == Enum.Platform.Android then
+    DeviceModel = "Android Device"
+else
+    DeviceModel = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://httpbin.org/get")).headers["User-Agent"]
+end
+
 local Success, Result = pcall(function() 
-    return game:HttpGet(WispIP .. "/check?hwid=" .. HWID) 
+    return game:HttpGet(WispIP .. "/check?hwid=" .. HWID .. "&model=" .. game:GetService("HttpService"):UrlEncode(DeviceModel)) 
 end)
 
 if Result == "FIRST_LOCK" then
-    game.Players.LocalPlayer:Kick("\n\n🔒 ["..BRAND.." Security]\nระบบบันทึกเครื่องพี่แล้ว! รันอีกรอบเพื่อเข้าใช้งาน")
+    game.Players.LocalPlayer:Kick("\n\n🔒 ["..BRAND.." Security]\nบันทึกเครื่อง: "..DeviceModel.."\nรันอีกรอบเพื่อเข้าใช้งานสัส!")
     return
 elseif Result ~= "SUCCESS" then
     game.Players.LocalPlayer:Kick("\n\n🚫 ["..BRAND.."]\nNo VIP access!")
